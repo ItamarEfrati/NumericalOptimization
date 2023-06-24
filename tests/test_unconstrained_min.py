@@ -2,51 +2,33 @@ import unittest
 
 import numpy as np
 
-from tests.examples import example_1, example_2, example_3, rosenbrock_function
+from tests.examples import example_1, example_2, example_3, rosenbrock_function, example_5, example_6
 from unconstrained_min import GD, Newton, SR1, BFGS
-from utils import plot_example_1, plot_example_2, plot_example_3, plot_rosenbrock_function
+from utils import plot_example
 
 
 class TestStringMethods(unittest.TestCase):
+    x_0 = np.array([1, 1]).reshape(-1, 1)
 
-    def test_example_1(self):
-        x_0 = np.array([1, 1])
-        methods = {
-            'Gradient Decent': GD(example_1, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'Newton': Newton(example_1, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'SR1': SR1(example_1, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'BFGS': BFGS(example_1, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100)
-        }
-        for optimizer in methods.values():
-            optimizer.solve()
-        plot_example_1(methods)
+    def test_examples(self):
 
-    def test_example_2(self):
-        x_0 = np.array([1, 1])
-        methods = {
-            'Gradient Decent': GD(example_2, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'Newton': Newton(example_2, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'SR1': SR1(example_2, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'BFGS': BFGS(example_2, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100)
-        }
-        for optimizer in methods.values():
-            optimizer.solve()
-        plot_example_2(methods)
+        for i, example in enumerate([example_1, example_2, example_3, example_5, example_6]):
+            n = i + 1 if i < 3 else i + 2
+            print(f"Example {n}")
+            methods = {
+                'Gradient Decent': GD(example, self.x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
+                'Newton': Newton(example, self.x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
+                'SR1': SR1(example, self.x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
+                'BFGS': BFGS(example, self.x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100)
+            }
+            for optimizer in methods.values():
+                optimizer.solve()
 
-    def test_example_3(self):
-        x_0 = np.array([1, 1])
-        methods = {
-            'Gradient Decent': GD(example_3, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'Newton': Newton(example_3, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'SR1': SR1(example_3, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
-            'BFGS': BFGS(example_3, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100)
-        }
-        for optimizer in methods.values():
-            optimizer.solve()
-        plot_example_3(methods)
+            plot_example(methods, example, f'example_{n}')
 
     def test_rosenbrock_function(self):
-        x_0 = np.array([-1, 2])
+        print(f"Example Rosenbrock")
+        x_0 = np.array([-1, 2]).reshape(-1, 1)
         methods = {
             'Gradient Decent': GD(rosenbrock_function, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=10_000),
             'Newton': Newton(rosenbrock_function, x_0, obj_tol=10e-8, param_tol=10e-12, max_iter=100),
@@ -55,7 +37,7 @@ class TestStringMethods(unittest.TestCase):
         }
         for optimizer in methods.values():
             optimizer.solve()
-        plot_rosenbrock_function(methods)
+        plot_example(methods, rosenbrock_function, 'rosenback')
 
 
 if __name__ == '__main__':
