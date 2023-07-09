@@ -7,7 +7,7 @@ from unconstrained_min import GD, Newton, SR1, BFGS
 from utils import plot_example
 
 
-class TestStringMethods(unittest.TestCase):
+class TestUnconstrained(unittest.TestCase):
     x_0 = np.array([1, 1]).reshape(-1, 1)
 
     def test_examples(self):
