@@ -64,3 +64,109 @@ def example_6(x, evaluate_hessian):
 
         h = np.array([[x_00_h, x_01_h], [x_10_h, x_11_h]]).reshape(2, 2)
     return f, g, h
+
+
+def log_barrier_function(x, ineq_constraints):
+    functions_values = list(map(lambda func: func(x), ineq_constraints))
+    f = sum(map(lambda a: -np.log(a), functions_values))
+    g = sum(map(lambda a: -1 / a, functions_values))
+
+
+class QPExample:
+    eq_constraints_mat = np.array([1, 1, 1]).reshape(1, 3)
+    eq_constraints_rhs = np.array([1]).reshape(-1, 1)
+
+    @staticmethod
+    def ineq_1(x, return_desc=False):
+        description = '-x <= 0'
+        f = -x[0]
+        g = np.array([-1, 0, 0]).reshape(-1, 1)
+        h = np.zeros((3, 3))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def ineq_2(x, return_desc=False):
+        description = '-y <= 0'
+        f = -x[1]
+        g = np.array([0, -1, 0]).reshape(-1, 1)
+        h = np.zeros((3, 3))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def ineq_3(x, return_desc=False):
+        description = '-z <= 0'
+        f = -x[2]
+        g = np.array([0, 0, -1]).reshape(-1, 1)
+        h = np.zeros((3, 3))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def func(x, t, return_desc=False):
+        description = 'min x^2 + y^2 + (z+1)^2'
+        f = t * (x[0] ** 2 + x[1] ** 2 + (x[2] + 1) ** 2)
+        g = (t * np.array([2 * x[0], 2 * x[1], 2 * (x[2] + 1)])).reshape(-1, 1)
+        h = t * np.diag([2, 2, 2])
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+
+class LPExample:
+    eq_constraints_mat = None
+    eq_constraints_rhs = None
+
+    @staticmethod
+    def ineq_1(x, return_desc=False):
+        description = 'x - 2 <= 0'
+        f = x[0] - 2
+        g = np.array([1, 0]).reshape(-1, 1)
+        h = np.zeros((2, 2))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def ineq_2(x, return_desc=False):
+        description = 'y - 1 <= 0'
+        f = x[1] - 1
+        g = np.array([0, 1]).reshape(-1, 1)
+        h = np.zeros((2, 2))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def ineq_3(x, return_desc=False):
+        description = '-y <= 0'
+        f = -x[1]
+        g = np.array([0, -1]).reshape(-1, 1)
+        h = np.zeros((2, 2))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def ineq_4(x, return_desc=False):
+        description = "-y -x + 1  <= 0"
+        f = -x[1] - x[0] + 1
+        g = np.array([-1, -1]).reshape(-1, 1)
+        h = np.zeros((2, 2))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
+
+    @staticmethod
+    def func(x, t, return_desc=False):
+        description = 'max x + y'
+        f = t * (-x[0] - x[1])
+        g = (t * np.array([-1, -1])).reshape(-1, 1)
+        h = t * np.zeros((2, 2))
+        if return_desc:
+            return f, g, h, description
+        return f, g, h
